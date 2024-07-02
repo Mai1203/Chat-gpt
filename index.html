@@ -115,15 +115,6 @@
     <script type="module">
         import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm"
 
-        const SELECTED_MODEL = 'gemma-2b-it-q4f32_1-MLC'
-
-        const engine = await CreateMLCEngine(
-            SELECTED_MODEL,{
-                initProgessCallback: (info) => {
-                    console.log('initProgessCallback', info);
-                }
-            }
-        )
         const $ = el => document.querySelector(el)
 
         const $form = $('form')
@@ -132,9 +123,26 @@
         const $messages = $('ul')
         const $container = $('main')
         const $button = $('button')
+        const $info = $('small')
 
-        $form.addEventListener('submit', (e) => {
-            e.preventDefault()
+        let messages = []
+
+        const SELECTED_MODEL = 'gemma-2b-it-q4f32_1-MLC'
+
+        const engine = await CreateMLCEngine(
+            SELECTED_MODEL,{
+                initProgressCallback: (info) => {
+                    console.log('initProgressCallback', info);
+                    $info.textContent = `${info.text}%`
+                    if(info.progress === 1){
+                        $button.removeAttribute('disabled')
+                    }
+                }
+            }
+        )
+
+        $form.addEventListener('submit', async (event) => {
+            event.preventDefault()
             const messageText = $input.value.trim()
 
             if(messageText !== ''){
@@ -145,10 +153,21 @@
 
             $button.setAttribute('disabled', true)
             
-            setTimeout(()=> {
+            /*setTimeout(()=> {
                 addMessage('hola desde el bot', 'bot')
                 $button.removeAttribute('disabled')
-            }, 2000)
+            }, 2000)*/
+            const reply = await engine.chat.completions.create({
+                messages: [
+                ...messages,
+                {
+                    role: 'user',
+                    content: messageText
+                }
+                ]
+            })
+            console.log(reply);
+            
         })
 
         function addMessage(text, sender){
@@ -198,7 +217,7 @@
     </main>
     <form>
         <input placeholder="Escribe tu pregunta">
-        <button>Enviar</button>
+        <button disabled>Enviar</button>
     </form>
 
     <small>&nbsp;</small>
