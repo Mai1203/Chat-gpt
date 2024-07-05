@@ -130,6 +130,16 @@
 
       let messages = [];
 
+      if(window.Worker){
+        const worker = new Worker('/worker.js')
+        worker.postMessage({name: 'hello'})
+
+        worker.onmessage = (e) => {
+          console.log("recibido desde worker");
+          console.log(e);
+        }
+      }
+
       //const SELECTED_MODEL = "gemma-2b-it-q4f32_1-MLC";
                               //Llama-3-8B-Instruct-q4f32_1-MLC-1k
       const SELECTED_MODEL = "Llama-3-8B-Instruct-q4f32_1-MLC-1k";
@@ -192,6 +202,7 @@
             content: reply
         });
         //addMessage(botMessage.content, "bot");
+        $container.scrollTop = $container.scrollHeight;
       });
 
       function addMessage(text, sender) {
