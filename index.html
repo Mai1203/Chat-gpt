@@ -6,117 +6,138 @@
     <title>Chat GPT local 1:03:13</title>
     <style>
       body {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
-          sans-serif;
-        background: #c1c1c1;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        background: #f0f0f0;
         display: grid;
         place-content: center;
-        height: 100dvh; /*dynamic viewport height */
+        height: 100dvh; /* Dinamic viewport height */
+        margin: 0;
+        padding: 0;
       }
+      
       main {
-        width: 400px;
-        max-width: 100%;
+        width: 100%;
+        max-width: 400px;
         height: 70vh;
-        background: #f1f1f1;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        padding: 8px;
+        background: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 12px;
         margin-bottom: 16px;
         overflow-y: auto;
         scroll-behavior: smooth;
       }
+      
       ul {
         display: flex;
         flex-direction: column;
         list-style: none;
         padding: 0;
+        margin: 0;
       }
+      
       .message {
         display: flex;
         flex-direction: column;
-        gap: 4px;
-        margin: 4px 0;
-        padding: 4px 8px;
-
-        > span {
-          width: 36px;
-          height: 36px;
-          background: #c9c9c9;
-          font-size: 12px;
-          font-weight: 500;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          border-radius: 999999px;
-        }
-        > p {
-          border-radius: 4px;
-          padding: 4px 8px;
-          margin-top: 8px;
-        }
-
-        &.user {
-          align-self: flex-end;
-          align-items: flex-end;
-          span,
-          p {
-            background: #e2e5eb;
-          }
-        }
-
-        &.bot {
-          align-self: flex-start;
-          span,
-          p {
-            background: #e3e4e1;
-          }
-        }
+        gap: 6px;
+        margin: 8px 0;
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: background 0.3s ease;
       }
+      
+      .message > span {
+        width: 40px;
+        height: 40px;
+        background: #e0e0e0;
+        font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+      }
+      
+      .message > p {
+        border-radius: 6px;
+        padding: 10px 14px;
+        margin: 0;
+      }
+      
+      .message.user {
+        align-self: flex-end;
+        align-items: flex-end;
+        background: #e6f7ff;
+      }
+      
+      .message.user > span,
+      .message.user > p {
+        background: #d6e9ff;
+      }
+      
+      .message.bot {
+        align-self: flex-start;
+        align-items: flex-start;
+        background: #f6f6f6;
+      }
+      
+      .message.bot > span,
+      .message.bot > p {
+        background: #ececec;
+      }
+      
       form {
         display: flex;
-        input {
-          border-radius: 9px;
-          flex-grow: 1;
-          border: 0;
-          padding: 8px;
-          margin-right: 8px;
-          border: 1px solid #ccc;
-        }
+        gap: 10px;
+        margin-top: 8px;
       }
+      
+      input {
+        flex-grow: 1;
+        border-radius: 12px;
+        padding: 10px 14px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+      }
+      
       button {
-        background: #09f;
-        border: 0;
-        color: white;
-        border-radius: 6px;
+        background: #007bff;
+        border: none;
+        color: #fff;
+        border-radius: 8px;
         cursor: pointer;
-        padding: 8px;
+        padding: 10px 16px;
         transition: background 0.3s ease;
-
-        &[disabled] {
-          background: #ccc;
-          opacity: 0.6;
-          pointer-events: none;
-        }
-
-        &:hover {
-          background: rgb(0, 104, 173);
-        }
       }
+      
+      button[disabled] {
+        background: #b0b0b0;
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+      
+      button:hover:not([disabled]) {
+        background: #0056b3;
+      }
+      
       small {
-        font-size: 10px;
-        color: #555;
+        font-size: 12px;
+        color: #777;
         position: fixed;
         bottom: 10px;
         left: 0;
         right: 0;
         margin: auto;
-        width: 400px;
+        text-align: center;
+        width: 100%;
+        max-width: 400px;
       }
+      
     </style>
     <script type="module">
       // import { CreateWebWorkerMLCEngine } from "https://esm.run/@mlc-ai/web-llm";
+      // version especifica estable
       import { CreateWebWorkerMLCEngine } from "https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.46/+esm"
 
       const $ = (el) => document.querySelector(el);
@@ -143,9 +164,9 @@
         }
       }*/
 
-      const SELECTED_MODEL = "gemma-2b-it-q4f32_1-MLC";
+      // const SELECTED_MODEL = "gemma-2b-it-q4f32_1-MLC";
                               //Llama-3-8B-Instruct-q4f32_1-MLC-1k
-      // const SELECTED_MODEL = "Llama-3-8B-Instruct-q4f32_1-MLC-1k";
+      const SELECTED_MODEL = "Llama-3-8B-Instruct-q4f32_1-MLC-1k";
 
       const engine = await CreateWebWorkerMLCEngine(
         new Worker('/worker.js', {type: 'module'}),
@@ -158,7 +179,7 @@
               end = true
               $loading?.parentNode?.removeChild($loading)
               $button.removeAttribute('disabled')
-              addMessage("¡Hola! Soy un ChatGPT que se ejecuta completamente en tu navegador. ¿En qué puedo ayudarte hoy?", 'bot')
+              addMessage("¡Hola! Soy un ChatGPT ¿En qué puedo ayudarte hoy?", 'bot')
               $input.focus()
             }
           },
@@ -220,11 +241,11 @@
         const $newMessage = clonedTemplate.querySelector(".message");
         const $who = $newMessage.querySelector("span");
         const $text = $newMessage.querySelector("p");
-
+        
         $text.textContent = text;
         $who.textContent = sender === "bot" ? "GPT" : "Tu";
         $newMessage.classList.add(sender);
-
+        
         $messages.appendChild($newMessage);
         $container.scrollTop = $container.scrollHeight;
         
@@ -235,6 +256,7 @@
   <body>
     <main>
       <ul>
+        <ul aria-live="polite"></ul>
         <!-- <li class="message bot">
           <span> GPT </span>
           <p>Respuesta del bot</p>
@@ -250,8 +272,8 @@
       </ul>
     </main>
     <form>
-      <input placeholder="Escribe tu pregunta" />
-      <button disabled>Enviar</button>
+      <input placeholder="Escribe tu mensaje aquí" aria-label="Mensaje" required />
+      <button disabled aria-label="Enviar mensaje">Enviar</button>
     </form>
 
     <small>&nbsp;</small>
@@ -262,5 +284,6 @@
         <p></p>
       </li>
     </template>
+    <small>&nbsp;</small>
   </body>
 </html>
